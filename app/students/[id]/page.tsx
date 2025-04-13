@@ -377,6 +377,10 @@ export default function StudentPage({ params }: PageParams) {
     .map((n) => n[0])
     .join("")
 
+  // Calculate max values for charts
+  const maxEngagement = 5 // Engagement is rated from 1-5
+  const maxCompletion = 100 // Completion is in percentage
+
   return (
     <TutorDashboardLayout>
       <div className="flex flex-col gap-6">
@@ -395,7 +399,115 @@ export default function StudentPage({ params }: PageParams) {
           </Button>
         </div>
 
-        {showInfo ? (
+        {!showInfo ? (
+          // Progress Tracker View
+          <div className="space-y-6">
+            {/* Overall Progress */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Overall Progress</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-medium">Objective Progress</span>
+                      <span className="text-sm text-muted-foreground">{student.progressData.objectiveProgress}%</span>
+                    </div>
+                    <Progress value={student.progressData.objectiveProgress} className="h-2" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Progress Metrics */}
+            <div className="grid gap-4 md:grid-cols-2">
+              {/* Engagement Trend */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-base">
+                    <LineChart className="h-4 w-4 inline-block mr-2" />
+                    Engagement Trend
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[200px] flex items-end justify-between gap-2">
+                    {student.progressData.engagementTrend.map((value, index) => (
+                      <div key={index} className="relative flex-1">
+                        <div
+                          className="absolute bottom-0 left-0 right-0 bg-primary rounded-t transition-all"
+                          style={{ height: `${(value / maxEngagement) * 100}%` }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between mt-2">
+                    {student.progressData.recentFeedback.map((feedback, index) => (
+                      <div key={index} className="text-xs text-muted-foreground">
+                        Class {feedback.class}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Completion Rate */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-base">
+                    <BarChart className="h-4 w-4 inline-block mr-2" />
+                    Completion Rate
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[200px] flex items-end justify-between gap-2">
+                    {student.progressData.completionRate.map((value, index) => (
+                      <div key={index} className="relative flex-1">
+                        <div
+                          className="absolute bottom-0 left-0 right-0 bg-primary rounded-t transition-all"
+                          style={{ height: `${(value / maxCompletion) * 100}%` }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between mt-2">
+                    {student.progressData.recentFeedback.map((feedback, index) => (
+                      <div key={index} className="text-xs text-muted-foreground">
+                        Class {feedback.class}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Feedback */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Feedback</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {student.progressData.recentFeedback.map((feedback, index) => (
+                    <Card key={index}>
+                      <CardContent className="p-4">
+                        <div className="flex justify-between mb-2">
+                          <div className="font-medium">Class {feedback.class}</div>
+                          <div className="text-sm text-muted-foreground">{feedback.date}</div>
+                        </div>
+                        <div className="text-sm">{feedback.summary}</div>
+                        <div className="flex gap-4 mt-2 text-sm">
+                          <div>Engagement: {feedback.engagement}/5</div>
+                          <div>Completion: {feedback.completion}%</div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
           // Student Info View
           <div className="grid gap-6 md:grid-cols-3">
             {/* Left column - Student info */}
@@ -504,114 +616,6 @@ export default function StudentPage({ params }: PageParams) {
                 </CardContent>
               </Card>
             </div>
-          </div>
-        ) : (
-          // Progress Tracker View
-          <div className="space-y-6">
-            {/* Overall Progress */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Overall Progress</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-sm font-medium">Objective Progress</span>
-                      <span className="text-sm text-muted-foreground">{student.progressData.objectiveProgress}%</span>
-                    </div>
-                    <Progress value={student.progressData.objectiveProgress} className="h-2" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Progress Metrics */}
-            <div className="grid gap-4 md:grid-cols-2">
-              {/* Engagement Trend */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-base">
-                    <LineChart className="h-4 w-4 inline-block mr-2" />
-                    Engagement Trend
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[200px] flex items-end justify-between gap-2">
-                    {student.progressData.engagementTrend.map((value, index) => (
-                      <div key={index} className="relative flex-1">
-                        <div
-                          className="absolute bottom-0 left-0 right-0 bg-primary rounded-t"
-                          style={{ height: `${(value / 5) * 100}%` }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    {student.progressData.recentFeedback.map((feedback, index) => (
-                      <div key={index} className="text-xs text-muted-foreground">
-                        Class {feedback.class}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Completion Rate */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-base">
-                    <BarChart className="h-4 w-4 inline-block mr-2" />
-                    Completion Rate
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[200px] flex items-end justify-between gap-2">
-                    {student.progressData.completionRate.map((value, index) => (
-                      <div key={index} className="relative flex-1">
-                        <div
-                          className="absolute bottom-0 left-0 right-0 bg-primary rounded-t"
-                          style={{ height: `${value}%` }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    {student.progressData.recentFeedback.map((feedback, index) => (
-                      <div key={index} className="text-xs text-muted-foreground">
-                        Class {feedback.class}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Recent Feedback */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Feedback</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {student.progressData.recentFeedback.map((feedback, index) => (
-                    <Card key={index}>
-                      <CardContent className="p-4">
-                        <div className="flex justify-between mb-2">
-                          <div className="font-medium">Class {feedback.class}</div>
-                          <div className="text-sm text-muted-foreground">{feedback.date}</div>
-                        </div>
-                        <div className="text-sm">{feedback.summary}</div>
-                        <div className="flex gap-4 mt-2 text-sm">
-                          <div>Engagement: {feedback.engagement}/5</div>
-                          <div>Completion: {feedback.completion}%</div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
           </div>
         )}
       </div>
