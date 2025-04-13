@@ -68,25 +68,25 @@ const generateWeeklySchedule = (startDate: Date) => {
         date: 13,
         student: "Soo-Jin Kim",
         time: "10:00 - 11:30",
-        topic: "Data Analysis with Pandas"
+        topic: "Python Programming"
       },
       {
         date: 14,
         student: "Jin Hyun Park",
         time: "15:00 - 16:30",
-        topic: "Object-Oriented Programming"
+        topic: "Python Programming"
       },
       {
         date: 15,
         student: "Mei Lin Chen",
         time: "14:00 - 15:30",
-        topic: "Speaking Practice: Task 1 & 2"
+        topic: "TOEFL"
       },
       {
         date: 16,
         student: "Hiroshi Tanaka",
         time: "16:00 - 17:30",
-        topic: "Electricity and Magnetism"
+        topic: "IB MYP Physics"
       }
     ]
 
