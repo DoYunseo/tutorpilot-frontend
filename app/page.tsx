@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { TutorDashboardLayout } from "@/components/tutor-dashboard-layout"
 import { StudentCard } from "@/components/student-card"
+import { LessonPlanDialog } from "@/components/lesson-plan-dialog"
 
 // Mock student data
 const students = [
@@ -169,14 +170,21 @@ export default function DashboardPage() {
                   </div>
                   <div className="space-y-2">
                     {day.lessons.map((lesson, lessonIndex) => (
-                      <div
+                      <LessonPlanDialog
                         key={lessonIndex}
-                        className="bg-secondary p-2 rounded-md text-xs"
+                        studentName={lesson.student}
+                        subject={lesson.topic}
+                        date={`April ${day.date}, 2025`}
+                        time={lesson.time}
                       >
-                        <div className="font-medium">{lesson.student}</div>
-                        <div className="text-muted-foreground">{lesson.time}</div>
-                        <div className="mt-1 line-clamp-2">{lesson.topic}</div>
-                      </div>
+                        <div
+                          className="bg-secondary p-2 rounded-md text-xs cursor-pointer hover:bg-secondary/80 transition-colors"
+                        >
+                          <div className="font-medium">{lesson.student}</div>
+                          <div className="text-muted-foreground">{lesson.time}</div>
+                          <div className="mt-1 line-clamp-2">{lesson.topic}</div>
+                        </div>
+                      </LessonPlanDialog>
                     ))}
                   </div>
                 </div>
